@@ -1,0 +1,14 @@
+
+.gradle/5.2.1/
+
+.gradle/buildOutputCleanup/
+
+.gradle/vcs-1/
+
+.idea/
+
+gradle/wrapper/
+
+gradlew
+
+gradlew.bat
