@@ -84,6 +84,9 @@ class PhysicalValue private constructor(val value: Double, val numerator: List<B
         return PhysicalValue(value+other.value, numerator, denominator)
     }
 
+    operator fun times(other: Double): PhysicalValue  = PhysicalValue(value*other, numerator, denominator)
+    operator fun div(other: Double): PhysicalValue  = PhysicalValue(value/other, numerator, denominator)
+
     operator fun minus(other: PhysicalValue): PhysicalValue {
         if(!sameBases(other)) {
             throw(PhysicalUnitException("-", this, other))
@@ -100,3 +103,6 @@ class PhysicalValue private constructor(val value: Double, val numerator: List<B
 
     override operator fun equals(other: Any?): Boolean = ((this === other) || (other is PhysicalValue && compareTo(other) == 0))
 }
+
+operator fun Double.times(other: PhysicalValue): PhysicalValue = PhysicalValue.create(this*other.value, other.numerator, other.denominator)
+operator fun Double.div(other: PhysicalValue): PhysicalValue = PhysicalValue.create(this/other.value, other.denominator, other.numerator)

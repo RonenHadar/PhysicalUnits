@@ -107,14 +107,21 @@ class PhysicalUnitTests {
         assertEquals(w2.unitText(), w1.unitText())
     }
 
-//    @Test
-//    fun `physical mult int`() {
-//        val x1 = PhysicalValue(3.0, listOf(BaseUnit.Meter), listOf(BaseUnit.Second))
-//        val y1 = 2
-//        val z1a = x1 * y1
-//        assertEquals(PhysicalValue(6.0, listOf(BaseUnit.Meter, BaseUnit.Second)), z1a)
-//        val z1b = y1 * x1
-//        assertEquals(PhysicalValue(6.0, listOf(BaseUnit.Meter, BaseUnit.Second)), z1b)
-//    }
+    @Test
+    fun `physical and numeric`() {
+        val x1 = PhysicalValue.create(2.0, listOf(BaseUnit.Kelvin))
+        val y1 = 4.0
+        val z1 = x1 * y1
+        assertEquals(PhysicalValue.create(8.0, listOf(BaseUnit.Kelvin)), z1)
+
+        val z2 = x1 / y1
+        assertEquals(PhysicalValue.create(0.5, listOf(BaseUnit.Kelvin)), z2)
+
+        val z3 = y1 * x1
+        assertEquals(PhysicalValue.create(8.0, listOf(BaseUnit.Kelvin)), z3)
+
+        val z4 = y1 / x1
+        assertEquals(PhysicalValue.create(2.0, null, listOf(BaseUnit.Kelvin)), z4)
+    }
 
 }
