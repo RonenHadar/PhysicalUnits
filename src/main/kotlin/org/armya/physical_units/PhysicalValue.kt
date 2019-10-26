@@ -1,14 +1,24 @@
 package org.armya.physical_units
 
-// The main constructor is used only from within the class, when we keep the unit details ordered by design
-class PhysicalValue private constructor(sorted: Boolean, val value: Double, val numerator: List<BaseUnit>? = null, val denominator: List<BaseUnit>? = null) {
-
-    // all users call this constructor which makes sure the units details are ordered before creating the object
-    constructor(value: Double, numerator: List<BaseUnit>? = null, denominator: List<BaseUnit>? = null): this(true, value, numerator?.sorted(), denominator?.sorted())
+// Create new PhysicalValue through the create function, the constructor is for internal use only
+class PhysicalValue private constructor(val value: Double, val numerator: List<BaseUnit>? = null, val denominator: List<BaseUnit>? = null) {
 
     companion object {
+        // utility function for creating PhysicalUnits
+        fun create(value: Double, numerator: List<BaseUnit>? = null, denominator: List<BaseUnit>? = null): PhysicalValue {
+            val num = numerator?.sorted()
+            val den = denominator?.sorted()
+            return orderedCreate(value, num, den)
+        }
 
-        fun addLists(l1: List<BaseUnit>?, l2: List<BaseUnit>?): MutableList<BaseUnit>? {
+        private fun orderedCreate(value: Double, numerator: List<BaseUnit>?, denominator: List<BaseUnit>?): PhysicalValue {
+            if(numerator == null || denominator == null) {
+                return PhysicalValue(value, numerator, denominator)
+            }
+            return reduce(value, numerator, denominator)
+        }
+
+        private fun addLists(l1: List<BaseUnit>?, l2: List<BaseUnit>?): MutableList<BaseUnit>? {
             return if(l1 == null) {
                 l2?.toMutableList()
             } else {
@@ -16,7 +26,7 @@ class PhysicalValue private constructor(sorted: Boolean, val value: Double, val 
             }
         }
 
-        fun reduce(value: Double, num1: List<BaseUnit>, den1: List<BaseUnit>): PhysicalValue {
+        private fun reduce(value: Double, num1: List<BaseUnit>, den1: List<BaseUnit>): PhysicalValue {
             val num2 = mutableListOf<BaseUnit>()
             val den2 = mutableListOf<BaseUnit>()
             var indexN = 0
@@ -45,44 +55,40 @@ class PhysicalValue private constructor(sorted: Boolean, val value: Double, val 
             } else if(indexD < den1.size) {
                 den2.addAll(den1.takeLast(den1.size-indexD))
             }
-            return PhysicalValue(true, value, num2, den2)
+            return PhysicalValue(value, if(num2.isEmpty()) { null } else { num2 }, if(den2.isEmpty()) { null } else { den2 })
         }
 
-        fun combine(value: Double, num1: List<BaseUnit>?, den1: List<BaseUnit>?, num2: List<BaseUnit>?, den2: List<BaseUnit>?): PhysicalValue {
+        private fun combine(value: Double, num1: List<BaseUnit>?, den1: List<BaseUnit>?, num2: List<BaseUnit>?, den2: List<BaseUnit>?): PhysicalValue {
             val num = addLists(num1, num2)
             val den = addLists(den1, den2)
-            if(num == null || den == null) {
-                return PhysicalValue(true, value, num, den)
-            }
-            return reduce(value, num, den)
+            return orderedCreate(value, num, den)
         }
-
-
     }
 
     override fun toString(): String {
         return "$value ${unitText()}"
     }
 
-    fun unitText() = "$numerator/$denominator"
+    // TODO: take care of special cases such as no units, single values, no numerator and no denominator
+    fun unitText(): String = "$numerator/$denominator"
 
     operator fun times(other: PhysicalValue): PhysicalValue = combine(value*other.value, numerator, denominator, other.numerator, other.denominator)
     operator fun div(other: PhysicalValue): PhysicalValue = combine(value/other.value, numerator, denominator, other.denominator, other.numerator)
 
-    fun sameBases(other: PhysicalValue) = (numerator == other.numerator && denominator == other.denominator)
+    private fun sameBases(other: PhysicalValue) = (numerator == other.numerator && denominator == other.denominator)
 
     operator fun plus(other: PhysicalValue): PhysicalValue {
         if(!sameBases(other)) {
             throw(PhysicalUnitException("+", this, other))
         }
-        return PhysicalValue(true, value+other.value, numerator, denominator)
+        return PhysicalValue(value+other.value, numerator, denominator)
     }
 
     operator fun minus(other: PhysicalValue): PhysicalValue {
         if(!sameBases(other)) {
             throw(PhysicalUnitException("-", this, other))
         }
-        return PhysicalValue(true,value-other.value, numerator, denominator)
+        return PhysicalValue(value-other.value, numerator, denominator)
     }
 
     operator fun compareTo(other: PhysicalValue): Int {
