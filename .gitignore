@@ -12,3 +12,6 @@ gradle/wrapper/
 gradlew
 
 gradlew.bat
+
+build/
+

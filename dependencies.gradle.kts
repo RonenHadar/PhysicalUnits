@@ -9,8 +9,8 @@ object versions {
         "reflect" to "org.jetbrains.kotlin:kotlin-reflect:${ver["kotlin"]}",
         "coroutines" to "org.jetbrains.kotlinx:kotlinx-coroutines-core:${ver["coroutines"]}",
 
-        "ktest" to "org.jetbrains.kotlin:kotlin-test:${ver["kotlin"]}",
-        "kunit" to "org.jetbrains.kotlin:kotlin-test-junit:${ver["kotlin"]}",
+        "kest" to "org.jetbrains.kotlin:kotlin-test:${ver["kotlin"]}",
+        "kest5" to "org.jetbrains.kotlin:kotlin-test-junit:${ver["kotlin"]}",
 
         "log-core" to "org.apache.logging.log4j:log4j-core:${ver["log4j"]}",
         "log-api" to "org.apache.logging.log4j:log4j-api:${ver["log4j"]}"
