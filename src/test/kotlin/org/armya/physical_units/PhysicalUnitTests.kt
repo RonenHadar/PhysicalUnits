@@ -97,12 +97,14 @@ class PhysicalUnitTests {
         val x3 = PhysicalValue.create(1.0, null, listOf(BaseUnit.Second, BaseUnit.Meter, BaseUnit.Kilogram, BaseUnit.Kelvin, BaseUnit.Kandela, BaseUnit.Ampere, BaseUnit.Meter, BaseUnit.Second, BaseUnit.Kelvin, BaseUnit.Kilogram, BaseUnit.Ampere, BaseUnit.Kandela))
         assertEquals("null/[Meter, Meter, Second, Second, Kilogram, Kilogram, Ampere, Ampere, Kelvin, Kelvin, Kandela, Kandela]", x3.unitText())
 
-        val y1 = PhysicalValue.create(1.0, listOf(BaseUnit.Meter, BaseUnit.Second, BaseUnit.Kelvin, BaseUnit.Kilogram, BaseUnit.Ampere),
-                listOf(BaseUnit.Second, BaseUnit.Meter, BaseUnit.Kilogram, BaseUnit.Kelvin, BaseUnit.Kandela))
-        val z1 = PhysicalValue.create(1.0, listOf(BaseUnit.Kandela, BaseUnit.Meter, BaseUnit.Second, BaseUnit.Kelvin, BaseUnit.Kilogram, BaseUnit.Ampere, BaseUnit.Kandela),
-                listOf(BaseUnit.Ampere, BaseUnit.Meter, BaseUnit.Second, BaseUnit.Kelvin, BaseUnit.Kilogram, BaseUnit.Ampere, BaseUnit.Kandela))
+        val y1 = PhysicalValue.create(1.0, listOf(BaseUnit.Meter, BaseUnit.Second, BaseUnit.Kelvin, BaseUnit.Second, BaseUnit.Second),
+                                                 listOf(BaseUnit.Kandela, BaseUnit.Kilogram, BaseUnit.Ampere, BaseUnit.Kandela))
+        val z1 = PhysicalValue.create(1.0, listOf(BaseUnit.Kelvin, BaseUnit.Meter, BaseUnit.Second, BaseUnit.Kelvin),
+                                                 listOf(BaseUnit.Ampere, BaseUnit.Kilogram, BaseUnit.Ampere, BaseUnit.Kandela))
         val w1 = y1 * z1
-        assertEquals(x1.unitText(), w1.unitText())
+        val w2 = z1 * y1
+        assertEquals("[Meter, Meter, Second, Second, Second, Second, Kelvin, Kelvin, Kelvin]/[Kilogram, Kilogram, Ampere, Ampere, Ampere, Kandela, Kandela, Kandela]", w1.unitText())
+        assertEquals(w2.unitText(), w1.unitText())
     }
 
 //    @Test
